@@ -3,10 +3,11 @@ using Unity.Cinemachine;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
-    
+
     [Header("References")]
     [SerializeField] private Rigidbody rigidBody;
-    [SerializeField] private InputReader inputReader;
+    [SerializeField] private InputReader inputReader = default;
+    // [SerializeField] private TransformAnchor gameplayCameraTransform = default;
 
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 6.0f;
@@ -21,7 +22,7 @@ public class PlayerController : MonoBehaviour {
     private bool isJumping;
     private bool isSliding;
 
-    private Vector3 moveInput;
+    public Vector2 moveInput;
 
     private void Awake() {
         rigidBody = GetComponent<Rigidbody>();
@@ -33,15 +34,17 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void OnEnable() {
-        inputReader.moveEvent += OnMove;
-        inputReader.jumpEvent += OnJump;
-        inputReader.slideEvent += OnSlide;
+        inputReader.MoveEvent += OnMove;
+        inputReader.JumpEvent += OnJumpInitiated;
+        inputReader.JumpCanceledEvent += OnJumpCanceled;
+        inputReader.SlideEvent += OnSlide;
     }
 
     private void OnDisable() {
-        inputReader.moveEvent -= OnMove;
-        inputReader.jumpEvent -= OnJump;
-        inputReader.slideEvent -= OnSlide;
+        inputReader.MoveEvent -= OnMove;
+        inputReader.JumpEvent -= OnJumpInitiated;
+        inputReader.JumpCanceledEvent -= OnJumpCanceled;
+        inputReader.SlideEvent -= OnSlide;
     }
 
     private void Update() {
@@ -54,7 +57,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void HandleMovement() {
-        Vector3 adjustedDirection = new Vector3(moveInput.x, rigidBody.linearVelocity.y, moveInput.z);
+        Vector3 adjustedDirection = new Vector3(moveInput.x, rigidBody.linearVelocity.y, moveInput.y);
         Debug.Log(adjustedDirection);
 
         if(adjustedDirection.magnitude > 0.0f) {
@@ -89,8 +92,12 @@ public class PlayerController : MonoBehaviour {
         moveInput = input;
     }
 
-    private void OnJump() {
+    private void OnJumpInitiated() {
         isJumping = true;
+    }
+
+    private void OnJumpCanceled() {
+        isJumping = false;
     }
 
     private void OnSlide() {
