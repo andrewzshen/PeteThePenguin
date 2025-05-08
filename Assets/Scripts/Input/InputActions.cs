@@ -406,9 +406,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
-            @Slide.started += instance.OnSlide;
-            @Slide.performed += instance.OnSlide;
-            @Slide.canceled += instance.OnSlide;
+            @Slide.started += instance.OnSurf;
+            @Slide.performed += instance.OnSurf;
+            @Slide.canceled += instance.OnSurf;
         }
 
         /// <summary>
@@ -426,9 +426,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
-            @Slide.started -= instance.OnSlide;
-            @Slide.performed -= instance.OnSlide;
-            @Slide.canceled -= instance.OnSlide;
+            @Slide.started -= instance.OnSurf;
+            @Slide.performed -= instance.OnSurf;
+            @Slide.canceled -= instance.OnSurf;
         }
 
         /// <summary>
@@ -554,6 +554,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnSlide(InputAction.CallbackContext context);
+        void OnSurf(InputAction.CallbackContext context);
     }
 }

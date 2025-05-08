@@ -1,16 +1,13 @@
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-[CreateAssetMenu(fileName = "InputReader", menuName = "Input/InputReader")]
+[CreateAssetMenu(fileName = "Input Reader", menuName = "Input/InputReader")]
 public class InputReader : ScriptableObject, InputActions.IGameplayActions {
-
     // Gameplay 
     public event UnityAction<Vector2> MoveEvent = delegate {};
-    public event UnityAction JumpEvent = delegate {};
-    public event UnityAction JumpCanceledEvent = delegate {};   
-    public event UnityAction SlideEvent = delegate {};
+    public event UnityAction<bool> JumpEvent = delegate {};
+    public event UnityAction SurfEvent = delegate {};
 
     private InputActions inputActions;
 
@@ -19,29 +16,31 @@ public class InputReader : ScriptableObject, InputActions.IGameplayActions {
             inputActions = new InputActions();
             inputActions.Gameplay.SetCallbacks(this);
         }
-        inputActions.Enable();
     }
 
     private void OnDisable() {
-        inputActions.Disable();
+        inputActions.Gameplay.Disable();
+    }
+
+    public void EnableGameplayActions() {
+        inputActions.Gameplay.Enable();
     }
 
     public void OnMove(InputAction.CallbackContext context) {
-        MoveEvent?.Invoke(context.ReadValue<Vector2>());
+        MoveEvent.Invoke(context.ReadValue<Vector2>());
     }
 
     public void OnJump(InputAction.CallbackContext context) {
-        if(context.phase == InputActionPhase.Performed) {
-            JumpEvent.Invoke();
-        }
-        if(context.phase == InputActionPhase.Canceled) {
-            JumpCanceledEvent.Invoke();
+        if(context.started) {
+            JumpEvent.Invoke(true);
+        } else if(context.canceled) {
+            JumpEvent.Invoke(false);
         }
     }
 
-    public void OnSlide(InputAction.CallbackContext context) {
-        if(SlideEvent != null && context.started) {
-            SlideEvent.Invoke();
+    public void OnSurf(InputAction.CallbackContext context) {
+        if(context.started) {
+            SurfEvent.Invoke();
         }
     }
 }
