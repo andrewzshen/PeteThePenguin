@@ -7,7 +7,7 @@ public class InputReader : ScriptableObject, InputActions.IGameplayActions {
     // Gameplay 
     public event UnityAction<Vector2> MoveEvent = delegate {};
     public event UnityAction<bool> JumpEvent = delegate {};
-    public event UnityAction SurfEvent = delegate {};
+    public event UnityAction<bool> SurfEvent = delegate {};
 
     private InputActions inputActions;
 
@@ -40,7 +40,9 @@ public class InputReader : ScriptableObject, InputActions.IGameplayActions {
 
     public void OnSurf(InputAction.CallbackContext context) {
         if(context.started) {
-            SurfEvent.Invoke();
+            SurfEvent.Invoke(true);
+        } else if(context.canceled) {
+            SurfEvent.Invoke(false);
         }
     }
 }
