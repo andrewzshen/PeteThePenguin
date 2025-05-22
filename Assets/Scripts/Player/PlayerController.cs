@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour {
 
     public Vector2 moveInput;
 
-    private Vector3 velocity, savedVelocity, savedMovementVelocity;
+    private Vector3 velocity, inputVelocity, savedMovementVelocity;
     
     private void Awake() {
         mover = GetComponent<PlayerMover>();
@@ -73,11 +73,10 @@ public class PlayerController : MonoBehaviour {
     private void FixedUpdate() {
         mover.GroundCheck();
         HandleMovement();
-
         mover.SetVelocity(velocity);
     }
 
-    #region STATES
+    #region Grounded State
 
     private void Grounded_Enter() {
         Debug.Log("grounded enter");
@@ -85,31 +84,130 @@ public class PlayerController : MonoBehaviour {
     
     private void Grounded_Update() {
         Debug.Log("grounded update");
+
+        if(IsRising()) {
+            stateMachine.ChangeState(States.Rising);
+        } else if(mover.IsGrounded() && IsGroundTooSteep()) {
+            stateMachine.ChangeState(States.Sliding);
+        } else if(!mover.IsGrounded()) {
+            stateMachine.ChangeState(States.Falling);
+        } else if(false/* jump logic */) {
+            stateMachine.ChangeState(States.Jumping);
+        }
     }
 
-    private void GroundedExit() {
+    private void Grounded_FixedUpdate() {
+        
+    }
+
+    private void Grounded_Exit() {
         Debug.Log("grounded exit");
     }
 
     #endregion
 
-    #region MOVEMENT
+    #region Falling State
 
-    private void HandleMovement()
-    {
+    private void Falling_Enter() {
+        Debug.Log("grounded enter");
+    }
+    
+    private void Falling_Update() {
+        Debug.Log("grounded update");
+
+        if(IsRising()) {
+            stateMachine.ChangeState(States.Rising);
+        }
+    }
+
+    private void Falling_Exit() {
+        Debug.Log("grounded exit");
+    }
+
+    #endregion
+
+    #region Sliding State
+
+    private void Sliding_Enter() {
+        Debug.Log("sliding enter");
+    }
+    
+    private void Sliding_Update() {
+        Debug.Log("Sliding State update");
+
+        if(IsRising()) {
+            stateMachine.ChangeState(States.Rising);
+        }
+    }
+
+    private void Sliding_FixedUpdate() {
+        Vector3 pointDown = Vector3.ProjectOnPlane(mover.GetGroundNormal(), transform.up).normalized;
+        inputVelocity -= pointDown * Vector3.Dot(inputVelocity, pointDown);
+        velocity += inputVelocity * Time.fixedDeltaTime;
+    }
+
+    private void Sliding_Exit() {
+        Debug.Log("grounded exit");
+    }
+
+    #endregion
+
+    #region Rising State
+
+    private void Rising_Enter() {
+        Debug.Log("grounded enter");
+    }
+    
+    private void Rising_Update() {
+        Debug.Log("grounded update");
+
+        if(IsRising()) {
+            stateMachine.ChangeState(States.Rising);
+        }
+    }
+
+    private void Rising_Exit() {
+        Debug.Log("grounded exit");
+    }
+
+    #endregion
+
+    #region Jumping State
+
+    private void Jumping_Enter() {
+        Debug.Log("grounded enter");
+    }
+    
+    private void Jumping_Update() {
+        Debug.Log("grounded update");
+
+        if(IsRising()) {
+            stateMachine.ChangeState(States.Rising);
+        }
+    }
+
+    private void Jumping_Exit() {
+        Debug.Log("grounded exit");
+    }
+
+    #endregion
+
+    #region Movement
+
+    private void HandleMovement() {
         Vector3 verticalVelocity = transform.up.normalized * Vector3.Dot(velocity, transform.up.normalized);
         Vector3 horizontalVelocity = velocity - verticalVelocity;
 
         verticalVelocity -= transform.up * (gravity * Time.deltaTime);
 
         float friction = (stateMachine.State == States.Grounded) ? groundFriction : airFriction;
-        horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, Vector3.zero, friction * Time.deltaTime);
+        horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, Vector3.zero, friction * Time.fixedDeltaTime);
 
         velocity = verticalVelocity + horizontalVelocity;
     }
 
     private void HandleJumping() {
-
+        
     }
 
     private void HandleSliding() {
@@ -118,11 +216,23 @@ public class PlayerController : MonoBehaviour {
 
     #endregion
 
-    private Vector3 CalculateMovementVelocity() { 
-        return CalculateMovementDirection() * moveSpeed;
+    private bool IsRising() => Vector3.Dot(velocity, transform.up) > 0.0f;
+    private bool IsFalling() => Vector3.Dot(velocity, transform.up) < 0.0f;
+    private bool IsGroundTooSteep() => !mover.IsGrounded() || Vector3.Angle(mover.GetGroundNormal(), transform.up) > maxSlope;
+
+    private void OnGroundContactLost() {
+
     }
 
-    private Vector3 CalculateMovementDirection() {
+    private void OnGroundContactGained() {
+        Vector3 inputVelocity = CalculateInputVelocity();
+    }
+        
+    private Vector3 CalculateInputVelocity() { 
+        return CalculateInputDirection() * moveSpeed;
+    }
+
+    private Vector3 CalculateInputDirection() {
         Vector3 direction = cameraTransform == null ?
                 transform.right * moveInput.x + transform.forward * moveInput.y :
                 Vector3.ProjectOnPlane(cameraTransform.right, transform.up).normalized * moveInput.x +
@@ -130,7 +240,7 @@ public class PlayerController : MonoBehaviour {
         return direction.normalized;
     }
 
-    #region EVENT LISTENERS
+    #region Event Listeners
 
     private void OnMove(Vector2 input) {
         moveInput = input;
