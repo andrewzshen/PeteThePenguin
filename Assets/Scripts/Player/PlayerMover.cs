@@ -37,6 +37,12 @@ public class PlayerMover : MonoBehaviour {
         }
     }
 
+    private void LateUpdate() {
+        if(inDebugMode) {
+            raycaster.DrawDebug();
+        }
+    }
+
     public void GroundCheck() {
         if(currentLayerMask != gameObject.layer) {
             CalculateRaycasterLayerMask();
@@ -46,6 +52,7 @@ public class PlayerMover : MonoBehaviour {
         raycaster.RayLength = isUsingExtendedRaycasterRange ? 
             baseRaycasterRange + colliderHeight * transform.localScale.x * stepHeightRatio :
             baseRaycasterRange;
+        raycaster.CastRay();
         
         isGrounded = raycaster.HasDetectedHit();
         if(!isGrounded) {

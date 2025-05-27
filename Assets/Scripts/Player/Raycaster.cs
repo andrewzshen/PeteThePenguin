@@ -27,8 +27,19 @@ public class Raycaster {
     public void CastRay() {
         Vector3 worldOrigin = transform.TransformPoint(origin);
         Vector3 worldDirection = GetRayDirection();
-
         Physics.Raycast(worldOrigin, worldDirection, out hitInfo, RayLength, LayerMask, QueryTriggerInteraction.Ignore);
+    }
+
+    public void DrawDebug() {
+        if (!HasDetectedHit()) {
+            return;
+        }
+
+        Debug.DrawRay(hitInfo.point, hitInfo.normal, Color.red, Time.deltaTime);
+        float markerSize = 0.2f;
+        Debug.DrawLine(hitInfo.point + Vector3.up * markerSize, hitInfo.point - Vector3.up * markerSize, Color.green, Time.deltaTime);
+        Debug.DrawLine(hitInfo.point + Vector3.right * markerSize, hitInfo.point - Vector3.right * markerSize, Color.green, Time.deltaTime);
+        Debug.DrawLine(hitInfo.point + Vector3.forward * markerSize, hitInfo.point - Vector3.forward * markerSize, Color.green, Time.deltaTime);
     }
 
     public void SetRayOrigin(Vector3 position) => origin = transform.InverseTransformPoint(position);
