@@ -130,8 +130,7 @@ GameObject:
   - component: {fileID: 244032492}
   - component: {fileID: 244032496}
   - component: {fileID: 244032495}
-  - component: {fileID: 244032494}
-  - component: {fileID: 244032493}
+  - component: {fileID: 244032497}
   m_Layer: 0
   m_Name: Pete
   m_TagString: Untagged
@@ -148,55 +147,13 @@ Transform:
   m_GameObject: {fileID: 244032491}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 545.7, y: 2.32, z: 218.3}
+  m_LocalPosition: {x: 552.11, y: 3.6, z: 241.51}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 378906674}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &244032493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 244032491}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49dadc41c5948334c9683e3f92f28332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputReader: {fileID: 11400000, guid: 18706ac92af2b1a47b95e012c506658f, type: 2}
-  moveSpeed: 1
-  airSpeed: 2
-  jumpSpeed: 10
-  jumpDuration: 0.2
-  gravity: 10
-  airFriction: 0.5
-  groundFriction: 100
-  fallSpeed: 10
-  slideSpeed: 5
-  maxSlope: 30
-  cameraTransform: {fileID: 1774073613}
-  moveInput: {x: 0, y: 0}
---- !u!114 &244032494
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 244032491}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53e98a38b715ae5498e74315808db936, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stepHeightRatio: 0.078
-  colliderHeight: 2
-  colliderThickness: 1
-  colliderOffset: {x: 0, y: 0, z: 0}
-  inDebugMode: 0
 --- !u!136 &244032495
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -228,7 +185,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 244032491}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 9.36
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -247,6 +204,95 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &244032497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244032491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd6262f3e5ec4364cb78b80579a5f179, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputReader: {fileID: 11400000, guid: 18706ac92af2b1a47b95e012c506658f, type: 2}
+  rayCheckLength: 0
+  rideHeight: 0
+  rideSpringStrength: 0
+  rideSpringDampFactor: 0
+  fallForce: 0
+  maxSpeed: 8
+  acceleration: 200
+  maxAcceleration: 100
+  accelerationFactorFromDot:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 2
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.12192396
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  maxAccelerationFactorFromDot:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 2
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  uprightRotationSpringStrength: 100
+  uprightRotationSpringDamper: 10
 --- !u!1 &378906673
 GameObject:
   m_ObjectHideFlags: 0
@@ -654,8 +700,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1135874512}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2534013, y: 0.00000006758237, z: -0.000000017703275, w: 0.9673613}
-  m_LocalPosition: {x: 545.7, y: 4.5699997, z: 214.3}
+  m_LocalRotation: {x: 0.25340134, y: 0.0000000040223664, z: -0.0000000010536634, w: 0.9673613}
+  m_LocalPosition: {x: 552.11, y: 5.85, z: 237.51}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -975,8 +1021,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1774073607}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.25340134, y: -3.8531994e-11, z: 1.36770656e-11, w: 0.9673613}
-  m_LocalPosition: {x: 545.7, y: 4.5699997, z: 214.3}
+  m_LocalRotation: {x: 0.25340134, y: 0.0000000042084842, z: -0.000000001764169, w: 0.9673613}
+  m_LocalPosition: {x: 552.11, y: 5.85, z: 237.51}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

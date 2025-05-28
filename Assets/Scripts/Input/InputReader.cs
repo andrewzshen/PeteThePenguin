@@ -26,6 +26,10 @@ public class InputReader : ScriptableObject, InputActions.IGameplayActions {
         inputActions.Gameplay.Enable();
     }
 
+    public void DisableGameplayActions() {
+        inputActions.Gameplay.Disable();
+    }
+
     public void OnMove(InputAction.CallbackContext context) {
         MoveEvent.Invoke(context.ReadValue<Vector2>());
     }
