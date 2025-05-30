@@ -1,24 +1,10 @@
-using System;
 using MonsterLove.StateMachine;
-using Unity.Mathematics;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class GroundRider : MonoBehaviour {
 
     [SerializeField] private InputReader inputReader;
-
-    private enum States {
-        Grounded,
-        Falling,
-        Sliding,
-        Rising,
-        Jumping,
-        Surfing
-    }
-    private StateMachine<States> stateMachine;
-
-    private Rigidbody rb;
 
     [Header("Riding")]
     [SerializeField] private float rayCheckLength;
@@ -39,7 +25,22 @@ public class GroundRider : MonoBehaviour {
     [SerializeField] private float uprightRotationSpringDamper;
 
     [Header("Jumping")]
+    [SerializeField] private float jumpForce;
     
+    private enum States {
+        Grounded,
+        Falling,
+        Sliding,
+        Rising,
+        Jumping,
+        Surfing
+    }
+    private StateMachine<States> stateMachine;
+
+    private Rigidbody rb;
+
+    private Raycaster raycaster;
+
     private Vector2 moveInput;
 
     private Vector3 inputDirection;
@@ -80,8 +81,12 @@ public class GroundRider : MonoBehaviour {
         HandleRotation();
     }
 
+    private void Grounded_FixedUpdate() {
+
+    }
+
     private void HandleMovement() {
-        inputDirection = new Vector3(moveInput.x, 0.0f, moveInput.y);
+        inputDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
 
         if(inputDirection.magnitude > 1.0f) {
             inputDirection.Normalize();
@@ -99,29 +104,23 @@ public class GroundRider : MonoBehaviour {
         neededAcceleration = Vector3.ClampMagnitude(neededAcceleration, modifiedMaxAcceleration);
 
         Vector3 force = Vector3.Scale(rb.mass * neededAcceleration, new Vector3(1.0f, 0.0f, 1.0f));
-        rb.AddForce(force);
+        rb.AddForce(force, ForceMode.Force);
     }
 
     private void HandleRotation() {
         Quaternion currentRotation = transform.rotation;
-        Quaternion targetRotation = Quaternion.LookRotation(inputDirection, Vector3.up);
-        Quaternion shortestRotation = targetRotation * Quaternion.Inverse(currentRotation);
-
-        // If the dot is negative you gotta flip the shit
-        if(Quaternion.Dot(targetRotation, currentRotation) < 0.0f) {
-            shortestRotation = new Quaternion(
-                -shortestRotation.x, 
-                -shortestRotation.y, 
-                -shortestRotation.z, 
-                -shortestRotation.w
-            );
-        }
+        Quaternion targetRotation = Quaternion.LookRotation(inputDirection.magnitude > 0.05f ? inputDirection : transform.forward, Vector3.up);
+        Quaternion shortestRotation = targetRotation * Quaternion.Inverse( // If the dot is negative you gotta flip the shit
+            Quaternion.Dot(targetRotation, currentRotation) < 0.0f ? 
+            new Quaternion(-currentRotation.x, -currentRotation.y, -currentRotation.z, -currentRotation.w) :
+            currentRotation
+        );
 
         shortestRotation.ToAngleAxis(out float rotationDegrees, out Vector3 rotationAxis);
         float rotationRadians = rotationDegrees * Mathf.Deg2Rad;
         rotationAxis.Normalize();
 
-        Vector3 springForce = rotationRadians * (rotationAxis * uprightRotationSpringStrength);
+        Vector3 springForce = rotationAxis * (rotationRadians * uprightRotationSpringStrength);
         Vector3 dampingForce = rb.angularVelocity * uprightRotationSpringDamper;
         Vector3 torque = springForce - dampingForce;
         rb.AddTorque(torque, ForceMode.Force);
