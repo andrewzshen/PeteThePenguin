@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 3acb1f358b033764cbf1df17ba3b4b5a
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174519
+  packageName: Dyp The Penguin
+  packageVersion: 1.1
+  assetPath: Assets/Dypsloom/DypThePenguin/Demo/Material/Shaders/Shader_Matcap.shader
+  uploadId: 387684

@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 4ce25cdd331b8514f946a6c36624dd31
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _CurvatureTexture: {fileID: 2800000, guid: ce359834fcf624142b9c461e9002954d, type: 3}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174519
+  packageName: Dyp The Penguin
+  packageVersion: 1.1
+  assetPath: Assets/Dypsloom/DypThePenguin/Demo/Material/Shaders/Shader_Crystal.shader
+  uploadId: 387684
