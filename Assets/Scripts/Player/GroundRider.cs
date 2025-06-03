@@ -83,29 +83,12 @@ public class GroundRider : MonoBehaviour {
         HandleMovement();
         MaintainUprightRotation();
         MaintainRideHeight();
+
+        rb.AddForce(Physics.gravity, ForceMode.Acceleration);
     }
 
     private void Grounded_FixedUpdate() {
 
-    }
-
-    private void MaintainRideHeight() {
-        bool nearGround = NearGround(out RaycastHit hitInfo);
-
-        if(nearGround) {
-            float distanceFromRideHeight = rideHeight - hitInfo.distance;
-            float downVelocity = Vector3.Dot(Vector3.down, rb.linearVelocity);
-
-            float springForce = -distanceFromRideHeight * rideHeightSpringStrength;
-            float dampingForce = downVelocity * rideHeightSpringDampingFactor;
-            Vector3 rideForce = (springForce - dampingForce) * Vector3.down;
-
-            rb.AddForce(rideForce - forceFromGravity);
-
-            if(hitInfo.rigidbody != null) {
-                hitInfo.rigidbody.AddForceAtPosition(-rideForce, hitInfo.point);
-            }
-        }
     }
 
     private void HandleMovement() {
@@ -128,6 +111,25 @@ public class GroundRider : MonoBehaviour {
 
         Vector3 movementForce = Vector3.Scale(rb.mass * neededAcceleration, new Vector3(1f, 0f, 1f));
         rb.AddForce(movementForce);
+    }
+
+    private void MaintainRideHeight() {
+        bool nearGround = NearGround(out RaycastHit hitInfo);
+
+        if(nearGround) {
+            float distanceFromRideHeight = rideHeight - hitInfo.distance;
+            float downVelocity = Vector3.Dot(Vector3.down, rb.linearVelocity);
+
+            float springForce = -distanceFromRideHeight * rideHeightSpringStrength;
+            float dampingForce = downVelocity * rideHeightSpringDampingFactor;
+            Vector3 rideForce = (springForce - dampingForce) * Vector3.down;
+
+            rb.AddForce(rideForce);
+
+            if(hitInfo.rigidbody != null) {
+                hitInfo.rigidbody.AddForceAtPosition(-rideForce, hitInfo.point);
+            }
+        }
     }
 
     private void MaintainUprightRotation() {
@@ -156,10 +158,6 @@ public class GroundRider : MonoBehaviour {
         Vector3 dampingForce = rb.angularVelocity * uprightRotationSpringDampingFactor;
         Vector3 uprightTorque = springForce - dampingForce;
         rb.AddTorque(uprightTorque);
-    }
-
-    private Quaternion CalculateTargetRotation() {
-        return Quaternion.identity;
     }
 
     private bool NearGround(out RaycastHit rayHit) => Physics.Raycast(transform.position, Vector3.down, out rayHit, rayCheckLength);
